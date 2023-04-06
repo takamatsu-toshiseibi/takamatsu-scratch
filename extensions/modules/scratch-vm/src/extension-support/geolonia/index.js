@@ -72,7 +72,7 @@ class Scratch3GeoloniaBlocks {
                 {
                     opcode: 'displayMap',
                     blockType: BlockType.COMMAND,
-                    text: '地図を経度 [LNG] 緯度 [LAT] ズーム [ZOOM] で表示',
+                    text: '高松市をズーム [ZOOM] で表示',
                     arguments: {
                         LNG: {
                             type: ArgumentType.NUMBER,
@@ -224,13 +224,19 @@ class Scratch3GeoloniaBlocks {
             mapContainer.appendChild(div);
 
             this.map = {}
-            this.map = new geolonia.Map({
-                container: '#geolonia-map',
-                style: 'https://raw.githubusercontent.com/geolonia/scratch-style/main/style.json',
-                center: [args.LNG, args.LAT],
+            // this.map = new city.Takamatsu.Map({
+            //     container: '#geolonia-map',
+            //     style: 'https://raw.githubusercontent.com/geolonia/scratch-style/main/style.json',
+            //     center: [args.LNG, args.LAT],
+            //     zoom: args.ZOOM,
+            //     pitch: 0,
+            // });
+
+            this.map = new city.Takamatsu.Map({
+                container: 'geolonia-map',
                 zoom: args.ZOOM,
                 pitch: 0,
-            });
+            })
 
             this.map.once('load', () => {
                 this.map.on('moveend', (e) => {

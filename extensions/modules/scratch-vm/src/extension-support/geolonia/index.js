@@ -9,46 +9,6 @@ const Message = {
 
 const AvailableLocales = ['en', 'ja', 'ja-Hira'];
 
-const style = {
-    "version": 8,
-    "sources": {
-    "japan": {
-    "type": "vector",
-    "url": "https://cdn.geolonia.com/tiles/japanese-prefectures.json"
-    }
-    },
-    "glyphs": "https://glyphs.geolonia.com/{fontstack}/{range}.pbf",
-    "layers": [
-        {
-            "id": "background",
-            "type": "background",
-            "paint": {
-                "background-color": "#222222"
-            }
-        },
-        {
-            "id": "prefs",
-            "type": "fill",
-            "source": "japan",
-            "source-layer": "prefectures",
-            "paint": {
-                "fill-color": "#333333",
-                "fill-outline-color": "#444444"
-            }
-        },
-        {
-            id: 'point-pref',
-            type: 'circle',
-            source: "japan",
-            "source-layer": "admins",
-            paint: {
-                'circle-radius': 4,
-                'circle-color': 'rgba(255, 255, 255, 0.6)',
-            },
-        }
-    ],
-}
-
 class Scratch3GeoloniaBlocks {
     constructor (runtime) {
         this.runtime = runtime;
@@ -85,6 +45,25 @@ class Scratch3GeoloniaBlocks {
                         ZOOM: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 10,
+                        },
+                    }
+                },
+                {
+                    opcode: 'addLayer',
+                    blockType: BlockType.COMMAND,
+                    text: 'レイヤー [LAYER] を 色 [COLOR] 透明度 [OPACITY] で表示',
+                    arguments: {
+                        LAYER: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '都市計画区域界',
+                        },
+                        COLOR: {
+                            type: ArgumentType.COLOR,
+                            defaultValue: '#FF0000',
+                        },
+                        OPACITY: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.4,
                         },
                     }
                 },
@@ -224,13 +203,6 @@ class Scratch3GeoloniaBlocks {
             mapContainer.appendChild(div);
 
             this.map = {}
-            // this.map = new city.Takamatsu.Map({
-            //     container: '#geolonia-map',
-            //     style: 'https://raw.githubusercontent.com/geolonia/scratch-style/main/style.json',
-            //     center: [args.LNG, args.LAT],
-            //     zoom: args.ZOOM,
-            //     pitch: 0,
-            // });
 
             this.map = new city.Takamatsu.Map({
                 container: 'geolonia-map',
@@ -261,6 +233,18 @@ class Scratch3GeoloniaBlocks {
 
                 resolve()
             })
+        })
+    }
+
+    addLayer(args) {
+        if (!this.loaded) {
+            console.error('まず地図を表示してください。')
+            return
+        }
+
+        this.map.loadData(args.LAYER, {
+            'fill-color': args.COLOR,
+            'fill-opacity': Number(args.OPACITY),
         })
     }
 
